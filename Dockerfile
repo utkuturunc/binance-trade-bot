@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y curl && \
     rustup toolchain install 1.41.0 && \
     pip install --prefix=/install -r /requirements.txt
 
-FROM arm64v8/python:3.8-slim
+FROM --platform=$BUILDPLATFORM arm64v8/python:3.8-slim
 
 WORKDIR /app
 

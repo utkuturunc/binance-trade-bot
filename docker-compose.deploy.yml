@@ -5,6 +5,7 @@ services:
     image: ${DOCKER_IMAGE?Variable not set}
     volumes:
       - /home/ubuntu/config/binance-trade-bot/user.cfg:/app/user.cfg
+      - /home/ubuntu/config/binance-trade-bot/config/apprise.yml:/app/config/apprise.yml
       - /home/ubuntu/data/binance-trade-bot/db:/app/data
     command: python -m binance_trade_bot
     environment:
@@ -54,7 +55,6 @@ services:
     networks:
       - net
     volumes:
-      - db-data/config:/config
       - /home/ubuntu/data/binance-trade-bot/db:/data
     ports:
       - 3000:3000

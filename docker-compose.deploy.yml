@@ -1,0 +1,80 @@
+version: "3"
+
+services:
+  crypto-trading:
+    image: ${DOCKER_IMAGE?Variable not set}
+    volumes:
+      - /home/ubuntu/config/binance-trade-bot/user.cfg:/app/user.cfg
+      - /home/ubuntu/data/binance-trade-bot/db:/app/data
+    command: python -m binance_trade_bot
+    environment:
+      - PYTHONUNBUFFERED=1
+    networks:
+      - net
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
+  api:
+    image: ${DOCKER_IMAGE?Variable not set}
+    volumes:
+      - /home/ubuntu/config/binance-trade-bot/user.cfg:/app/user.cfg
+      - /home/ubuntu/data/binance-trade-bot/db:/app/data
+    ports:
+      - 5123:5123
+    command: gunicorn binance_trade_bot.api_server:app -k eventlet -w 1 --threads 1 -b 0.0.0.0:5123
+    depends_on:
+      - crypto-trading
+    networks:
+      - net
+    deploy:
+      labels:
+        traefik.http.routers.swarmpit-https.entrypoints: https
+        traefik.http.routers.swarmpit-https.tls.certresolver: le
+        traefik.http.routers.swarmpit-http.rule: Host(`binance-bot.home.utku.me`)
+        traefik.http.routers.swarmpit-http.middlewares: https-redirect
+        traefik.http.services.swarmpit.loadbalancer.server.port: "5123"
+        traefik.http.routers.swarmpit-http.entrypoints: http
+        traefik.constraint-label: traefik-public
+        traefik.http.routers.swarmpit-https.rule: Host(`binance-bot.home.utku.me`)
+        traefik.docker.network: traefik-public
+        traefik.enable: "true"
+        traefik.http.routers.swarmpit-https.tls: "true"
+      placement:
+        constraints:
+          - node.role == manager
+
+  sqlitebrowser:
+    image: ghcr.io/linuxserver/sqlitebrowser
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+    networks:
+      - net
+    volumes:
+      - db-data/config:/config
+      - /home/ubuntu/data/binance-trade-bot/db:/data
+    ports:
+      - 3000:3000
+    deploy:
+      labels:
+        traefik.http.routers.swarmpit-https.entrypoints: https
+        traefik.http.routers.swarmpit-https.tls.certresolver: le
+        traefik.http.routers.swarmpit-http.rule: Host(`binance-bot-db.home.utku.me`)
+        traefik.http.routers.swarmpit-http.middlewares: https-redirect
+        traefik.http.services.swarmpit.loadbalancer.server.port: "3000"
+        traefik.http.routers.swarmpit-http.entrypoints: http
+        traefik.constraint-label: traefik-public
+        traefik.http.routers.swarmpit-https.rule: Host(`binance-bot-db.home.utku.me`)
+        traefik.docker.network: traefik-public
+        traefik.enable: "true"
+        traefik.http.routers.swarmpit-https.tls: "true"
+      placement:
+        constraints:
+          - node.role == manager
+
+networks:
+  net:
+    driver: overlay

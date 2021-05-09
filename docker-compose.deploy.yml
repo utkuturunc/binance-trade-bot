@@ -5,7 +5,6 @@ services:
     image: ${DOCKER_IMAGE?Variable not set}
     volumes:
       - /home/ubuntu/config/binance-trade-bot/user.cfg:/app/user.cfg
-      - /home/ubuntu/config/binance-trade-bot/supported_coin_list:/app/supported_coin_list
       - /home/ubuntu/config/binance-trade-bot/apprise.yml:/app/config/apprise.yml
       - /home/ubuntu/data/binance-trade-bot/db:/app/data
     command: python -m binance_trade_bot

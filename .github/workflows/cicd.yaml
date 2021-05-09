@@ -60,7 +60,6 @@ jobs:
             mkdir -p /home/ubuntu/data/binance-trade-bot/db
             mkdir -p /home/ubuntu/config/binance-trade-bot
             echo ${{ secrets.USER_CFG }} | base64 --decode > /home/ubuntu/config/binance-trade-bot/user.cfg
-            echo ${{ secrets.SUPPORTED_COIN_LIST }} | base64 --decode > /home/ubuntu/config/binance-trade-bot/supported_coin_list
             echo ${{ secrets.APPRISE_CFG }} | base64 --decode > /home/ubuntu/config/binance-trade-bot/apprise.yml     
             sudo docker login -u ${{ github.repository_owner }} -p ${{ secrets.CR_TOKEN }} ghcr.io
             sudo DOCKER_IMAGE="${{ env.IMAGE }}:${{ env.GIT_SHA }}" docker stack deploy -c /home/ubuntu/deployment/binance-trade-bot/docker-compose.deploy.yml binance-trade-bot --resolve-image never --with-registry-auth

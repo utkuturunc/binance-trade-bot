@@ -17,12 +17,10 @@ class Strategy(AutoTrader):
         all_tickers = self.manager.get_all_market_tickers()
 
         current_coin = self.db.get_current_coin()
-
         current_coin_price = all_tickers.get_price(
             current_coin + self.config.BRIDGE)
 
-
-print(f"{datetime.now()} - I am scouting the best trades. Current coin: {current_coin + self.config.BRIDGE} Price: {current_coin_price}")
+        print(f"{datetime.now()} - I am scouting the best trades. Current coin: {current_coin + self.config.BRIDGE} Price: {current_coin_price}")
 
         if current_coin_price is None:
             self.logger.info("Skipping scouting... current coin {} not found".format(

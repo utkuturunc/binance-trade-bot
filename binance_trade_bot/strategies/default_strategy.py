@@ -1,6 +1,7 @@
 import random
 import sys
 from datetime import datetime
+import time
 from binance_trade_bot.auto_trader import AutoTrader
 
 
@@ -13,6 +14,8 @@ class Strategy(AutoTrader):
         """
         Scout for potential jumps from the current coin to another coin
         """
+        all_tickers = self.manager.get_all_market_tickers()
+
         current_coin = self.db.get_current_coin()
         current_coin_price = all_tickers.get_price(
             current_coin + self.config.BRIDGE)

@@ -1,7 +1,7 @@
 import random
 import sys
 from datetime import datetime
-
+import time
 from binance_trade_bot.auto_trader import AutoTrader
 
 

@@ -14,11 +14,21 @@ class Strategy(AutoTrader):
         """
         Scout for potential jumps from the current coin to another coin
         """
+        start = time.time()
+        print('Scout start')
         all_tickers = self.manager.get_all_market_tickers()
+
+        print("Got tickers")
+        end = time.time()
+        print(end - start)
 
         current_coin = self.db.get_current_coin()
         current_coin_price = all_tickers.get_price(
             current_coin + self.config.BRIDGE)
+
+        print("Got current coin")
+        end = time.time()
+        print(end - start)
 
         print(f"{datetime.now()} - I am scouting the best trades. Current coin: {current_coin + self.config.BRIDGE} Price: {current_coin_price}")
 
@@ -27,7 +37,15 @@ class Strategy(AutoTrader):
                 current_coin + self.config.BRIDGE))
             return
 
+        print("Ready to jump")
+        end = time.time()
+        print(end - start)
+
         self._jump_to_best_coin(current_coin, current_coin_price, all_tickers)
+
+        print("Jump ended")
+        end = time.time()
+        print(end - start)
 
     def bridge_scout(self):
         current_coin = self.db.get_current_coin()

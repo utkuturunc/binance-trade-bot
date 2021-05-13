@@ -17,12 +17,12 @@ class Strategy(AutoTrader):
         all_tickers = self.manager.get_all_market_tickers()
 
         current_coin = self.db.get_current_coin()
-        # Display on the console, the current coin+Bridge, so users can see *some* activity and not think the bot has
-        # stopped. Not logging though to reduce log size.
-        print(f"{datetime.now()} - I am scouting the best trades. Current coin: {current_coin + self.config.BRIDGE} Price: {current_coin_price}")
 
         current_coin_price = all_tickers.get_price(
             current_coin + self.config.BRIDGE)
+
+
+print(f"{datetime.now()} - I am scouting the best trades. Current coin: {current_coin + self.config.BRIDGE} Price: {current_coin_price}")
 
         if current_coin_price is None:
             self.logger.info("Skipping scouting... current coin {} not found".format(

@@ -1,6 +1,5 @@
 from datetime import datetime
 from typing import Dict, List
-import time
 from sqlalchemy.orm import Session
 
 from .binance_api_manager import AllTickers, BinanceAPIManager
@@ -119,9 +118,6 @@ class AutoTrader:
         """
         Given a coin, get the current price ratio for every other enabled coin
         """
-        print("Get ratios start")
-        start = time.time()
-
         ratio_dict: Dict[Pair, float] = {}
 
         for pair in self.db.get_pairs_from(coin):
